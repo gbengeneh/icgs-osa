@@ -1,0 +1,3 @@
+<?php
+namespace Database\Seeders;use App\Models\Event;use App\Models\User;use Illuminate\Database\Seeder;
+class DatabaseSeeder extends Seeder{public function run():void{$admin=User::create(['name'=>'ICGS-OSA Administrator','email'=>'admin@icgsosa.org','password'=>'ChangeMe123!','graduating_year'=>1995,'role'=>'super_admin','status'=>'active']);Event::create(['title'=>'ICGS-OSA Homecoming & Annual General Meeting','description'=>'Annual reunion and association meeting.','starts_at'=>'2026-12-18 10:00:00','location'=>'ICGS School Premises, Igbotako','created_by'=>$admin->id,'published'=>true]);}}

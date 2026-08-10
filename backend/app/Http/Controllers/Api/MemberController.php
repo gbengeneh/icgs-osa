@@ -1,0 +1,3 @@
+<?php
+namespace App\Http\Controllers\Api;use App\Http\Controllers\Controller;use App\Models\User;use Illuminate\Http\Request;
+class MemberController extends Controller{public function index(Request $request){abort_unless(in_array($request->user()->status,['verified','active']),403,'Membership verification required.');return User::query()->whereIn('status',['verified','active'])->when($request->year,fn($q,$v)=>$q->where('graduating_year',$v))->when($request->location,fn($q,$v)=>$q->where('location','like',"%$v%"))->when($request->profession,fn($q,$v)=>$q->where('occupation','like',"%$v%"))->orderBy('name')->paginate(24);}}
