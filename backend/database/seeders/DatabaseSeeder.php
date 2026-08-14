@@ -13,7 +13,9 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         foreach ([1989, 1992, 1995, 1998, 2004, 2010] as $year) AlumniSet::firstOrCreate(['year' => $year], ['description' => "ICGS graduating class of $year"]);
-        $admin = User::firstOrCreate(['email' => 'admin@icgsosa.org'], ['name' => 'ICGS-OSA Administrator', 'password' => 'ChangeMe123!', 'graduating_year' => 1995, 'role' => 'super_admin', 'status' => 'active']);
+        $adminEmail = env('SEED_SUPER_ADMIN_EMAIL', 'admin@icgsosa.org');
+        $adminPassword = env('SEED_SUPER_ADMIN_PASSWORD', 'ChangeMe123!');
+        $admin = User::firstOrCreate(['email' => $adminEmail], ['name' => 'ICGS-OSA Administrator', 'password' => $adminPassword, 'graduating_year' => 1995, 'role' => 'super_admin', 'status' => 'active']);
         $primary = User::firstOrCreate(['email' => 'kayode@example.com'], ['name' => 'Kayode Arowolo', 'password' => 'ChangeMe123!', 'graduating_year' => 1998, 'occupation' => 'Business Consultant', 'location' => 'Akure, Nigeria', 'role' => 'coordinator', 'status' => 'active']);
         foreach ([['Adeola Akindele', 'adeola@example.com'], ['Morenike Adeyemi', 'morenike@example.com'], ['Femi Olatunji', 'femi@example.com']] as [$name, $email]) User::firstOrCreate(['email' => $email], ['name' => $name, 'password' => 'ChangeMe123!', 'graduating_year' => 1998, 'role' => 'member', 'status' => 'active']);
         $set = AlumniSet::where('year', 1998)->firstOrFail();
@@ -23,5 +25,4 @@ class DatabaseSeeder extends Seeder
         $this->call(NewsSeeder::class);
     }
 }
-
 
