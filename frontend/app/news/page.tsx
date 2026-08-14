@@ -21,7 +21,9 @@ export default function News() {
     const slug = new URLSearchParams(location.search).get('article');
     if (!slug) return;
     const local = articles.find(article => article.slug === slug);
-    if (local) setSelected(local);
+    // URL state is external to React. Schedule the update so this effect does
+    // not cause a synchronous second render when the article list arrives.
+    if (local) queueMicrotask(() => setSelected(local));
     else api<Article>(`/news/${slug}`).then(setSelected).catch(() => history.replaceState(null, '', '/news'));
   }, [articles, selected]);
 

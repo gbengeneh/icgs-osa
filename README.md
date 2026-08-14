@@ -30,7 +30,20 @@ php artisan migrate --seed
 php artisan serve
 ```
 
-The API runs at http://localhost:8000. Set `NEXT_PUBLIC_API_URL=http://localhost:8000/api` in `frontend/.env.local`.
+The API runs at http://localhost:8000. The frontend sends browser requests to its
+same-origin `/backend-api` route and Next.js proxies them to Laravel. For local
+development, copy `frontend/.env.example` to `frontend/.env.local`.
+
+When the backend is deployed, add this environment variable in the Vercel
+project settings and redeploy the frontend:
+
+```env
+BACKEND_ORIGIN=https://api.your-domain.com
+```
+
+Use the backend origin only (no trailing `/api`); the proxy adds `/api`
+automatically. `NEXT_PUBLIC_API_URL` should normally remain unset. This avoids
+browser CORS issues and keeps the VPS address out of the client bundle.
 
 ## Current milestone
 
