@@ -1,0 +1,3 @@
+'use client';
+import { PageHeading } from '@/components/portal';
+export default function Settings(){return <><PageHeading eyebrow="Configuration" title="Association settings" copy="Manage public identity, membership rules and administrator access."/><section className="portal-card settings-form"><h2>General information</h2><div className="field-grid"><label>Association name<input defaultValue="ICGS Old Students Association"/></label><label>Public email<input defaultValue="hello@icgsosa.org"/></label></div><label>Membership approval<select defaultValue="manual"><option value="manual">Manual administrator approval</option><option value="automatic">Automatic approval</option></select></label><button className="portal-primary">Save changes</button></section></>}

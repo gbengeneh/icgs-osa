@@ -1,0 +1,3 @@
+<?php
+use Illuminate\Database\Migrations\Migration;use Illuminate\Database\Schema\Blueprint;use Illuminate\Support\Facades\Schema;
+return new class extends Migration{public function up():void{Schema::table('events',function(Blueprint $t){$t->dateTime('ends_at')->nullable()->after('starts_at');$t->string('category')->default('Community event')->after('location');$t->string('registration_url')->nullable()->after('image_url');$t->boolean('featured')->default(false)->after('published');});}public function down():void{Schema::table('events',function(Blueprint $t){$t->dropColumn(['ends_at','category','registration_url','featured']);});}};
