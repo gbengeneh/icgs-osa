@@ -1,6 +1,6 @@
 // Browser requests stay on the Next.js origin and are proxied to Laravel.
 // This avoids localhost resolving to IPv6 while PHP listens on IPv4.
-const API_URL = process.env.NEXT_PUBLIC_API_URL ?? '/backend-api';
+const API_URL = '/backend-api';
 
 export type ApiUser = {
   id: number;

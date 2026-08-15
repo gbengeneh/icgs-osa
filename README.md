@@ -42,8 +42,8 @@ BACKEND_ORIGIN=https://api.your-domain.com
 ```
 
 Use the backend origin only (no trailing `/api`); the proxy adds `/api`
-automatically. `NEXT_PUBLIC_API_URL` should normally remain unset. This avoids
-browser CORS issues and keeps the VPS address out of the client bundle.
+automatically. Browser requests always use this same-origin proxy, which avoids
+CORS issues and keeps the VPS address out of the client bundle.
 
 ## Current milestone
 
