@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\DueController;
 use App\Http\Controllers\Api\AdministratorController;
 use App\Http\Controllers\Api\ExceptionalMemberController;
+use App\Http\Controllers\Api\PlatformFeeController;
 use App\Http\Controllers\Api\AuthController;use App\Http\Controllers\Api\EventController;use App\Http\Controllers\Api\ExcoController;use App\Http\Controllers\Api\MemberController;use App\Http\Controllers\Api\SetAdministratorController;use App\Http\Controllers\Api\SetController;use App\Http\Controllers\Api\SetMemberController;use Illuminate\Support\Facades\Route;
 
 Route::post('/register',[AuthController::class,'register']);
@@ -30,7 +31,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/dues',[DueController::class,'memberIndex']);
     Route::post('/dues/{due}/payments',[DueController::class,'submit']);
 
-    Route::middleware('role:coordinator,super_admin')->prefix('set-management')->group(function(){
+    Route::middleware(['role:coordinator,super_admin','admin.audit'])->prefix('set-management')->group(function(){
         Route::get('/dashboard',[SetMemberController::class,'dashboard']);
         Route::get('/members',[SetMemberController::class,'members']);
         Route::get('/excos',[ExcoController::class,'setIndex']);
@@ -43,8 +44,12 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/dues',function(\Illuminate\Http\Request $request,DueController $controller){$request->merge(['type'=>'set']);return $controller->store($request);});
         Route::patch('/dues/{due}',[DueController::class,'update']);
         Route::get('/dues/{due}/payments',[DueController::class,'payments']);
+        Route::get('/dues/{due}/ledger',[DueController::class,'ledger']);
         Route::post('/due-payments/{payment}/verify',[DueController::class,'verify']);
         Route::post('/due-payments/{payment}/reject',[DueController::class,'reject']);
+        Route::patch('/due-payments/{payment}/reconcile',[DueController::class,'reconcile']);
+        Route::get('/platform-fees',[PlatformFeeController::class,'setIndex']);
+        Route::post('/platform-fees/{fee}/payments',[PlatformFeeController::class,'submit']);
         Route::get('/administrators',[SetAdministratorController::class,'index']);
         Route::get('/administrator-candidates',[SetAdministratorController::class,'candidates']);
         Route::post('/administrators',[SetAdministratorController::class,'store']);
@@ -73,8 +78,16 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::post('/dues',[DueController::class,'store']);
         Route::patch('/dues/{due}',[DueController::class,'update']);
         Route::get('/dues/{due}/payments',[DueController::class,'payments']);
+        Route::get('/dues/{due}/ledger',[DueController::class,'ledger']);
         Route::post('/due-payments/{payment}/verify',[DueController::class,'verify']);
         Route::post('/due-payments/{payment}/reject',[DueController::class,'reject']);
+        Route::patch('/due-payments/{payment}/reconcile',[DueController::class,'reconcile']);
+        Route::get('/platform-fees',[PlatformFeeController::class,'manage']);
+        Route::post('/platform-fees',[PlatformFeeController::class,'store']);
+        Route::patch('/platform-fees/{fee}',[PlatformFeeController::class,'update']);
+        Route::get('/platform-fees/{fee}/ledger',[PlatformFeeController::class,'ledger']);
+        Route::post('/platform-fee-payments/{payment}/verify',[PlatformFeeController::class,'verify']);
+        Route::post('/platform-fee-payments/{payment}/reject',[PlatformFeeController::class,'reject']);
         Route::get('/news',[NewsController::class,'adminIndex']);
         Route::post('/news',[NewsController::class,'store']);
         Route::post('/news/{article}',[NewsController::class,'update']);

@@ -1,0 +1,3 @@
+<?php
+namespace App\Models;use Illuminate\Database\Eloquent\Model;
+class PlatformFeePayment extends Model{protected $fillable=['platform_fee_id','alumni_set_id','submitted_by','amount','reference','method','paid_at','note','status','verified_by','verified_at'];protected function casts():array{return ['amount'=>'decimal:2','paid_at'=>'datetime','verified_at'=>'datetime'];}public function fee(){return $this->belongsTo(PlatformFee::class,'platform_fee_id');}public function set(){return $this->belongsTo(AlumniSet::class,'alumni_set_id');}public function submitter(){return $this->belongsTo(User::class,'submitted_by');}}
