@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Bell,
+  Award,
   CalendarDays,
   ChevronDown,
   CircleUserRound,
@@ -29,6 +30,7 @@ import { mediaUrl } from "@/lib/api";
 const memberLinks = [
   ["/dashboard", "Overview", LayoutDashboard],
   ["/dashboard/profile", "My profile", CircleUserRound],
+  ["/dashboard/directory-privacy", "Directory privacy", UsersRound],
   ["/dashboard/set", "My set directory", GraduationCap],
   ["/dashboard/dues", "Dues & payments", CreditCard],
   ["/events", "Events", CalendarDays],
@@ -42,6 +44,8 @@ const adminLinks = [
   ["/admin/dues", "Dues & payments", CreditCard],
   ["/admin/sets", "Graduating sets", GraduationCap],
   ["/admin/set-admins", "Set administrators", UserCog],
+  ["/admin/administrators", "Super administrators", ShieldCheck],
+  ["/admin/exceptional-members", "Exceptional members", Award],
   ["/admin/excos", "Manage EXCOs", ShieldCheck],
   ["/admin/gallery", "Event gallery", FileImage],
   ["/admin/content", "Manage events", CalendarDays],

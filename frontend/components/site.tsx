@@ -12,6 +12,8 @@ const links = [
   ["/events", "Events"],
   ["/news", "News"],
   ["/gallery", "Gallery"],
+  ["/members", "Alumni Directory"],
+  ["/exceptional-members", "Exceptional Members"],
 ];
 
 export function Header() {

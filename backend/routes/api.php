@@ -2,6 +2,8 @@
 use App\Http\Controllers\Api\GalleryController;
 use App\Http\Controllers\Api\NewsController;
 use App\Http\Controllers\Api\DueController;
+use App\Http\Controllers\Api\AdministratorController;
+use App\Http\Controllers\Api\ExceptionalMemberController;
 use App\Http\Controllers\Api\AuthController;use App\Http\Controllers\Api\EventController;use App\Http\Controllers\Api\ExcoController;use App\Http\Controllers\Api\MemberController;use App\Http\Controllers\Api\SetAdministratorController;use App\Http\Controllers\Api\SetController;use App\Http\Controllers\Api\SetMemberController;use Illuminate\Support\Facades\Route;
 
 Route::post('/register',[AuthController::class,'register']);
@@ -13,6 +15,8 @@ Route::get('/sets',[SetController::class,'publicIndex']);
 Route::get('/gallery',[GalleryController::class,'index']);
 Route::get('/news',[NewsController::class,'index']);
 Route::get('/news/{article:slug}',[NewsController::class,'show']);
+Route::get('/public-members',[MemberController::class,'publicIndex']);
+Route::get('/exceptional-members',[ExceptionalMemberController::class,'index']);
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::get('/me',[AuthController::class,'me']);
@@ -45,7 +49,15 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::patch('/members/{member}',[SetMemberController::class,'update']);
     });
 
-    Route::middleware('role:super_admin')->prefix('admin')->group(function(){
+    Route::middleware(['role:super_admin','admin.audit'])->prefix('admin')->group(function(){
+        Route::get('/administrators',[AdministratorController::class,'index']);
+        Route::post('/administrators',[AdministratorController::class,'store']);
+        Route::delete('/administrators/{administrator}',[AdministratorController::class,'destroy']);
+        Route::get('/audit-logs',[AdministratorController::class,'audits']);
+        Route::get('/exceptional-members',[ExceptionalMemberController::class,'manage']);
+        Route::post('/exceptional-members',[ExceptionalMemberController::class,'store']);
+        Route::post('/exceptional-members/{exceptionalMember}',[ExceptionalMemberController::class,'update']);
+        Route::delete('/exceptional-members/{exceptionalMember}',[ExceptionalMemberController::class,'destroy']);
         Route::get('/members',[MemberController::class,'adminIndex']);
         Route::patch('/members/{member}',[MemberController::class,'adminUpdate']);
         Route::post('/members/{member}/approve',[SetMemberController::class,'approve']);
