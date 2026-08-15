@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/components/auth-provider";
+import { mediaUrl } from "@/lib/api";
 
 const memberLinks = [
   ["/dashboard", "Overview", LayoutDashboard],
@@ -134,7 +135,7 @@ export function PortalShell({
           ))}
         </nav>
         <button className="portal-user" onClick={logout}>
-          <span className={`portal-avatar ${user.photo_url ? "has-photo" : ""}`}>{user.photo_url ? <img src={user.photo_url} alt={userName} /> : initials}</span>
+          <span className={`portal-avatar ${user.photo_url ? "has-photo" : ""}`}>{user.photo_url ? <img src={mediaUrl(user.photo_url)} alt={userName} /> : initials}</span>
           <span>
             <b>{userName}</b>
             <small>
@@ -171,7 +172,7 @@ export function PortalShell({
               <i />
             </button>
             <div className="top-user">
-              <span className={`portal-avatar small ${user.photo_url ? "has-photo" : ""}`}>{user.photo_url ? <img src={user.photo_url} alt={userName} /> : initials}</span>
+              <span className={`portal-avatar small ${user.photo_url ? "has-photo" : ""}`}>{user.photo_url ? <img src={mediaUrl(user.photo_url)} alt={userName} /> : initials}</span>
               <span>
                 <b>{userName}</b>
                 <small>{roleName}</small>

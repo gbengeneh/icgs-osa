@@ -122,7 +122,8 @@ export function Footer() {
         </div>
       </div>
       <div className="shell copyright">
-        © 2026 ICGS-OSA. All rights reserved.
+        <span>© 2026 ICGS-OSA. All rights reserved.</span>
+        <span>Powered by <a href="https://globivance.com" target="_blank" rel="noopener noreferrer">Globivance Systems</a></span>
       </div>
     </footer>
   );

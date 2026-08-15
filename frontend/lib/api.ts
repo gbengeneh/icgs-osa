@@ -2,6 +2,16 @@
 // This avoids localhost resolving to IPv6 while PHP listens on IPv4.
 const API_URL = '/backend-api';
 
+export function mediaUrl(value?: string | null): string {
+  if (!value) return '';
+  try {
+    const url = new URL(value);
+    return url.pathname.startsWith('/storage/') ? `${API_URL}${url.pathname}` : value;
+  } catch {
+    return value.startsWith('/storage/') ? `${API_URL}${value}` : value;
+  }
+}
+
 export type ApiUser = {
   id: number;
   name: string;

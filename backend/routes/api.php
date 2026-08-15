@@ -26,6 +26,8 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/dues/{due}/payments',[DueController::class,'submit']);
 
     Route::middleware('role:coordinator,super_admin')->prefix('set-management')->group(function(){
+        Route::get('/dashboard',[SetMemberController::class,'dashboard']);
+        Route::get('/members',[SetMemberController::class,'members']);
         Route::patch('/community-links',[SetController::class,'updateCommunityLinks']);
         Route::get('/dues',[DueController::class,'manage']);
         Route::post('/dues',function(\Illuminate\Http\Request $request,DueController $controller){$request->merge(['type'=>'set']);return $controller->store($request);});
