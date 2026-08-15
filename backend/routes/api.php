@@ -19,12 +19,14 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/logout',[AuthController::class,'logout']);
     Route::get('/members',[MemberController::class,'index']);
     Route::get('/profile',[MemberController::class,'profile']);
+    Route::get('/my-set',[SetController::class,'mySet']);
     Route::patch('/profile',[MemberController::class,'updateProfile']);
     Route::post('/profile',[MemberController::class,'updateProfile']);
     Route::get('/dues',[DueController::class,'memberIndex']);
     Route::post('/dues/{due}/payments',[DueController::class,'submit']);
 
     Route::middleware('role:coordinator,super_admin')->prefix('set-management')->group(function(){
+        Route::patch('/community-links',[SetController::class,'updateCommunityLinks']);
         Route::get('/dues',[DueController::class,'manage']);
         Route::post('/dues',function(\Illuminate\Http\Request $request,DueController $controller){$request->merge(['type'=>'set']);return $controller->store($request);});
         Route::get('/dues/{due}/payments',[DueController::class,'payments']);

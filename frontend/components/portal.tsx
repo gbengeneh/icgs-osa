@@ -15,6 +15,7 @@ import {
   LogOut,
   Menu,
   Newspaper,
+  MessageCircle,
   Settings,
   ShieldCheck,
   UserCog,
@@ -35,6 +36,7 @@ const memberLinks = [
 const adminLinks = [
   ["/admin", "Overview", LayoutDashboard],
   ["/dashboard/profile", "Admin profile", CircleUserRound],
+  ["/admin/my-set", "My set information", GraduationCap],
   ["/admin/members", "Members", UsersRound],
   ["/admin/dues", "Dues & payments", CreditCard],
   ["/admin/sets", "Graduating sets", GraduationCap],
@@ -65,7 +67,8 @@ export function PortalShell({
     ["/set-admin/members", `${setYear} Set members`, UsersRound],
     ["/set-admin/dues", "Set dues", CreditCard],
     ["/set-admin/admins", "Admin team", UserCog],
-    ["/dashboard/set", "View set directory", GraduationCap],
+    ["/set-admin/set", "View set directory", GraduationCap],
+    ["/set-admin/community", "Community groups", MessageCircle],
     ["/events", "Events", CalendarDays],
   ] as const;
   const links = admin ? adminLinks : setAdmin ? setAdminLinks : memberLinks;
