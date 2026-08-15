@@ -7,3 +7,4 @@ vendor/
 storage/*.key
 storage/logs/*.log
 backend/database/database.sqlite
+backend/public/storage
