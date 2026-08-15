@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::patch('/community-links',[SetController::class,'updateCommunityLinks']);
         Route::get('/dues',[DueController::class,'manage']);
         Route::post('/dues',function(\Illuminate\Http\Request $request,DueController $controller){$request->merge(['type'=>'set']);return $controller->store($request);});
+        Route::patch('/dues/{due}',[DueController::class,'update']);
         Route::get('/dues/{due}/payments',[DueController::class,'payments']);
         Route::post('/due-payments/{payment}/verify',[DueController::class,'verify']);
         Route::post('/due-payments/{payment}/reject',[DueController::class,'reject']);
@@ -44,8 +45,13 @@ Route::middleware('auth:sanctum')->group(function(){
 
     Route::middleware('role:super_admin')->prefix('admin')->group(function(){
         Route::get('/members',[MemberController::class,'adminIndex']);
+        Route::patch('/members/{member}',[MemberController::class,'adminUpdate']);
+        Route::post('/members/{member}/approve',[SetMemberController::class,'approve']);
+        Route::post('/members/{member}/reject',[SetMemberController::class,'reject']);
+        Route::delete('/members/{member}',[SetMemberController::class,'destroy']);
         Route::get('/dues',[DueController::class,'manage']);
         Route::post('/dues',[DueController::class,'store']);
+        Route::patch('/dues/{due}',[DueController::class,'update']);
         Route::get('/dues/{due}/payments',[DueController::class,'payments']);
         Route::post('/due-payments/{payment}/verify',[DueController::class,'verify']);
         Route::post('/due-payments/{payment}/reject',[DueController::class,'reject']);
