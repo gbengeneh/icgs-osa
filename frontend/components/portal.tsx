@@ -35,7 +35,7 @@ const memberLinks = [
 ] as const;
 const adminLinks = [
   ["/admin", "Overview", LayoutDashboard],
-  ["/dashboard/profile", "Admin profile", CircleUserRound],
+  ["/admin/profile", "Admin profile", CircleUserRound],
   ["/admin/my-set", "My set information", GraduationCap],
   ["/admin/members", "Members", UsersRound],
   ["/admin/dues", "Dues & payments", CreditCard],

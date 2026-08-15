@@ -43,6 +43,7 @@ Route::middleware('auth:sanctum')->group(function(){
     });
 
     Route::middleware('role:super_admin')->prefix('admin')->group(function(){
+        Route::get('/members',[MemberController::class,'adminIndex']);
         Route::get('/dues',[DueController::class,'manage']);
         Route::post('/dues',[DueController::class,'store']);
         Route::get('/dues/{due}/payments',[DueController::class,'payments']);
