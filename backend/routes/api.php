@@ -24,6 +24,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::get('/members',[MemberController::class,'index']);
     Route::get('/profile',[MemberController::class,'profile']);
     Route::get('/my-set',[SetController::class,'mySet']);
+    Route::get('/my-set-excos',[ExcoController::class,'mySet']);
     Route::patch('/profile',[MemberController::class,'updateProfile']);
     Route::post('/profile',[MemberController::class,'updateProfile']);
     Route::get('/dues',[DueController::class,'memberIndex']);
@@ -32,6 +33,11 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::middleware('role:coordinator,super_admin')->prefix('set-management')->group(function(){
         Route::get('/dashboard',[SetMemberController::class,'dashboard']);
         Route::get('/members',[SetMemberController::class,'members']);
+        Route::get('/excos',[ExcoController::class,'setIndex']);
+        Route::get('/exco-candidates',[ExcoController::class,'candidates']);
+        Route::post('/excos',[ExcoController::class,'store']);
+        Route::post('/excos/{exco}',[ExcoController::class,'update']);
+        Route::delete('/excos/{exco}',[ExcoController::class,'destroy']);
         Route::patch('/community-links',[SetController::class,'updateCommunityLinks']);
         Route::get('/dues',[DueController::class,'manage']);
         Route::post('/dues',function(\Illuminate\Http\Request $request,DueController $controller){$request->merge(['type'=>'set']);return $controller->store($request);});
@@ -86,6 +92,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::patch('/sets/{set}',[SetController::class,'update']);
         Route::put('/sets/{set}/coordinator',[SetController::class,'assignCoordinator']);
         Route::get('/excos',[ExcoController::class,'adminIndex']);
+        Route::get('/exco-candidates',[ExcoController::class,'candidates']);
         Route::post('/excos',[ExcoController::class,'store']);
         Route::post('/excos/{exco}',[ExcoController::class,'update']);
         Route::patch('/excos/{exco}',[ExcoController::class,'update']);

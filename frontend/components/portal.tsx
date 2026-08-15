@@ -71,6 +71,7 @@ export function PortalShell({
     ["/set-admin", "Set overview", LayoutDashboard],
     ["/set-admin/members", `${setYear} Set members`, UsersRound],
     ["/set-admin/dues", "Set dues", CreditCard],
+    ["/set-admin/excos", "Set EXCOs", ShieldCheck],
     ["/set-admin/admins", "Admin team", UserCog],
     ["/set-admin/set", "View set directory", GraduationCap],
     ["/set-admin/community", "Community groups", MessageCircle],

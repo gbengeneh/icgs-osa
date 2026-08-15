@@ -1,13 +1,17 @@
 <?php
 namespace App\Http\Controllers\Api;
-use App\Http\Controllers\Controller;use App\Models\Exco;use Illuminate\Http\Request;use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\Controller;use App\Models\Exco;use App\Models\User;use Illuminate\Http\Request;
 class ExcoController extends Controller{
-public function index(){return Exco::where('active',true)->orderByDesc('tenure_end')->orderBy('sort_order')->orderBy('role')->get();}
-public function adminIndex(){return Exco::orderByDesc('active')->orderByDesc('tenure_end')->orderBy('sort_order')->paginate(100);}
-public function store(Request $request){$data=$this->validated($request);if($request->hasFile('photo'))$data['photo_url']=$this->storePhoto($request);unset($data['photo']);return response()->json(Exco::create($data),201);}
-public function update(Request $request,Exco $exco){$data=$this->validated($request,true);if($request->hasFile('photo')){$this->deletePhoto($exco->photo_url);$data['photo_url']=$this->storePhoto($request);}unset($data['photo']);$exco->update($data);return $exco->fresh();}
-public function destroy(Exco $exco){$exco->update(['active'=>false]);return response()->json(['message'=>'Executive archived.']);}
-private function validated(Request $request,bool $partial=false):array{$required=$partial?'sometimes':'required';return $request->validate(['user_id'=>'nullable|exists:users,id','name'=>"$required|string|max:120",'role'=>"$required|string|max:120",'graduating_year'=>'nullable|integer|min:1979|max:'.date('Y'),'occupation'=>'nullable|string|max:120','bio'=>'nullable|string|max:2000','photo_url'=>'nullable|string|max:500','photo'=>'sometimes|image|mimes:jpeg,jpg,png,webp|max:5120','tenure_start'=>"$required|integer|min:1979",'tenure_end'=>"$required|integer|gte:tenure_start",'sort_order'=>'integer|min:0','active'=>'boolean']);}
-private function storePhoto(Request $request):string{$path=$request->file('photo')->store('excos','public');return Storage::disk('public')->url($path);}
-private function deletePhoto(?string $url):void{if($url&&str_contains($url,'/storage/'))Storage::disk('public')->delete(str($url)->after('/storage/')->toString());}
-}
+public function index(){return $this->query()->whereNull('alumni_set_id')->where('active',true)->orderByDesc('tenure_end')->orderBy('sort_order')->get();}
+public function mySet(Request $r){$year=$r->user()->graduating_year;return $this->query()->whereHas('set',fn($q)=>$q->where('year',$year))->where('active',true)->orderByDesc('tenure_end')->orderBy('sort_order')->get();}
+public function adminIndex(){return $this->query()->whereNull('alumni_set_id')->orderByDesc('active')->orderByDesc('tenure_end')->orderBy('sort_order')->paginate(100);}
+public function setIndex(Request $r){$set=$this->managedSet($r);return $this->query()->where('alumni_set_id',$set->id)->orderByDesc('active')->orderByDesc('tenure_end')->orderBy('sort_order')->get();}
+public function candidates(Request $r){$year=$r->user()->role==='super_admin'?$r->integer('year'):$this->managedSet($r)->year;return User::whereIn('status',['active','verified'])->when($year,fn($q,$v)=>$q->where('graduating_year',$v))->orderBy('name')->get(['id','name','email','graduating_year','occupation','company','bio','photo_url']);}
+public function store(Request $r){$data=$this->validated($r);$data['alumni_set_id']=$r->user()->role==='super_admin'?null:$this->managedSet($r)->id;$data['created_by']=$r->user()->id;$data['updated_by']=$r->user()->id;$this->syncMember($data);return response()->json(Exco::create($data)->load('user'),201);}
+public function update(Request $r,Exco $exco){$this->authorizeRecord($r,$exco);$data=$this->validated($r,true);$data['updated_by']=$r->user()->id;$this->syncMember($data);$exco->update($data);return $exco->fresh('user');}
+public function destroy(Request $r,Exco $exco){$this->authorizeRecord($r,$exco);$exco->update(['active'=>false,'updated_by'=>$r->user()->id]);return response()->json(['message'=>'Executive archived.']);}
+private function query(){return Exco::with('user:id,name,email,graduating_year,occupation,company,bio,location,photo_url');}
+private function managedSet(Request $r){$set=$r->user()->administeredSets()->first();abort_unless($set,403,'No graduating set is assigned to this administrator.');return $set;}
+private function authorizeRecord(Request $r,Exco $exco):void{if($r->user()->role==='super_admin')abort_unless($exco->alumni_set_id===null,403,'Use the set administration workspace for set EXCOs.');else abort_unless($exco->alumni_set_id===$this->managedSet($r)->id,403,'You can manage only your set EXCOs.');}
+private function validated(Request $r,bool $partial=false):array{$required=$partial?'sometimes':'required';return $r->validate(['user_id'=>"$required|exists:users,id",'role'=>"$required|string|max:120",'tenure_start'=>"$required|integer|min:1979",'tenure_end'=>"$required|integer|gte:tenure_start",'sort_order'=>'sometimes|integer|min:0','active'=>'sometimes|boolean']);}
+private function syncMember(array &$data):void{if(!isset($data['user_id']))return;$user=User::findOrFail($data['user_id']);abort_unless(in_array($user->status,['active','verified'],true),422,'Only an approved member can serve as an EXCO.');$data['name']=$user->name;$data['graduating_year']=$user->graduating_year;$data['occupation']=$user->occupation;$data['bio']=$user->bio;$data['photo_url']=$user->photo_url;}}

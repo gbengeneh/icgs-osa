@@ -1,14 +1,15 @@
 // Browser requests stay on the Next.js origin and are proxied to Laravel.
 // This avoids localhost resolving to IPv6 while PHP listens on IPv4.
 const API_URL = '/backend-api';
+const MEDIA_URL = '/backend-storage';
 
 export function mediaUrl(value?: string | null): string {
   if (!value) return '';
   try {
     const url = new URL(value);
-    return url.pathname.startsWith('/storage/') ? `${API_URL}${url.pathname}` : value;
+    return url.pathname.startsWith('/storage/') ? `${MEDIA_URL}${url.pathname.slice('/storage'.length)}` : value;
   } catch {
-    return value.startsWith('/storage/') ? `${API_URL}${value}` : value;
+    return value.startsWith('/storage/') ? `${MEDIA_URL}${value.slice('/storage'.length)}` : value;
   }
 }
 
