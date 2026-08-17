@@ -45,6 +45,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('/dues',[DueController::class,'manage']);
         Route::post('/dues',function(\Illuminate\Http\Request $request,DueController $controller){$request->merge(['type'=>'set']);return $controller->store($request);});
         Route::patch('/dues/{due}',[DueController::class,'update']);
+        Route::delete('/dues/{due}',[DueController::class,'destroy']);
         Route::get('/dues/{due}/payments',[DueController::class,'payments']);
         Route::get('/dues/{due}/ledger',[DueController::class,'ledger']);
         Route::post('/due-payments/{payment}/verify',[DueController::class,'verify']);
@@ -81,6 +82,7 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('/dues',[DueController::class,'manage']);
         Route::post('/dues',[DueController::class,'store']);
         Route::patch('/dues/{due}',[DueController::class,'update']);
+        Route::delete('/dues/{due}',[DueController::class,'destroy']);
         Route::get('/dues/{due}/payments',[DueController::class,'payments']);
         Route::get('/dues/{due}/ledger',[DueController::class,'ledger']);
         Route::post('/due-payments/{payment}/verify',[DueController::class,'verify']);
