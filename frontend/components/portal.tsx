@@ -165,7 +165,7 @@ export function PortalShell({
           </button>
         </div>
         <nav className="portal-nav" aria-label="Portal navigation">
-          {navigationGroups.map(group => <div className={`portal-nav-group ${admin && openAdminGroup === group.label ? "is-expanded" : ""}`} key={group.label}>
+          {navigationGroups.map(group => <div className={`portal-nav-group ${admin ? "is-collapsible" : ""} ${admin && openAdminGroup === group.label ? "is-expanded" : ""}`} key={group.label}>
             {admin ? <button className="portal-nav-group-toggle" type="button" aria-expanded={openAdminGroup === group.label} onClick={() => setOpenAdminGroup(current => current === group.label ? null : group.label)}>
               <span>{group.label}</span><ChevronDown size={15}/>
             </button> : <span className="portal-nav-label">{group.label}</span>}
