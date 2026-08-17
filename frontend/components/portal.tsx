@@ -33,6 +33,7 @@ const memberLinks = [
   ["/dashboard/directory-privacy", "Directory privacy", UsersRound],
   ["/dashboard/set", "My set directory", GraduationCap],
   ["/dashboard/dues", "Dues & payments", CreditCard],
+  ["/dashboard/projects", "Set projects", FileText],
   ["/events", "Events", CalendarDays],
   ["/news", "News & updates", Newspaper],
 ] as const;
@@ -53,6 +54,7 @@ const adminGroups = [
     ["/admin/personal-dues", "My personal dues", CircleUserRound],
     ["/admin/platform-fees", "Set platform fees", CreditCard],
     ["/admin/payment-reconciliation", "Reconcile payments", FileText],
+    ["/admin/project-dues", "Project contributions", FileText],
   ]},
   { label: "Leadership", links: [
     ["/admin/excos", "Association EXCOs", ShieldCheck],
@@ -93,6 +95,7 @@ export function PortalShell({
     ["/set-admin/personal-dues", "My personal dues", CircleUserRound],
     ["/set-admin/platform-fees", "Platform fee", CreditCard],
     ["/set-admin/payment-reconciliation", "Reconcile payments", FileText],
+    ["/set-admin/project-dues", "Project contributions", FileText],
     ["/set-admin/excos", "Set EXCOs", ShieldCheck],
     ["/set-admin/admins", "Admin team", UserCog],
     ["/set-admin/set", "View set directory", GraduationCap],

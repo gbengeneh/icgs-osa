@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\DueController;
 use App\Http\Controllers\Api\AdministratorController;
 use App\Http\Controllers\Api\ExceptionalMemberController;
 use App\Http\Controllers\Api\PlatformFeeController;
+use App\Http\Controllers\Api\ProjectDueController;
 use App\Http\Controllers\Api\AuthController;use App\Http\Controllers\Api\EventController;use App\Http\Controllers\Api\ExcoController;use App\Http\Controllers\Api\MemberController;use App\Http\Controllers\Api\SetAdministratorController;use App\Http\Controllers\Api\SetController;use App\Http\Controllers\Api\SetMemberController;use Illuminate\Support\Facades\Route;
 
 Route::post('/register',[AuthController::class,'register']);
@@ -30,6 +31,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::post('/profile',[MemberController::class,'updateProfile']);
     Route::get('/dues',[DueController::class,'memberIndex']);
     Route::post('/dues/{due}/payments',[DueController::class,'submit']);
+    Route::get('/project-dues',[ProjectDueController::class,'memberIndex']);
 
     Route::middleware(['role:coordinator,super_admin','admin.audit'])->prefix('set-management')->group(function(){
         Route::get('/dashboard',[SetMemberController::class,'dashboard']);
@@ -50,6 +52,8 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::patch('/due-payments/{payment}/reconcile',[DueController::class,'reconcile']);
         Route::get('/platform-fees',[PlatformFeeController::class,'setIndex']);
         Route::post('/platform-fees/{fee}/payments',[PlatformFeeController::class,'submit']);
+        Route::get('/project-dues',[ProjectDueController::class,'setIndex']);
+        Route::post('/project-due-assignments/{assignment}/payments',[ProjectDueController::class,'submit']);
         Route::get('/administrators',[SetAdministratorController::class,'index']);
         Route::get('/administrator-candidates',[SetAdministratorController::class,'candidates']);
         Route::post('/administrators',[SetAdministratorController::class,'store']);
@@ -88,6 +92,11 @@ Route::middleware('auth:sanctum')->group(function(){
         Route::get('/platform-fees/{fee}/ledger',[PlatformFeeController::class,'ledger']);
         Route::post('/platform-fee-payments/{payment}/verify',[PlatformFeeController::class,'verify']);
         Route::post('/platform-fee-payments/{payment}/reject',[PlatformFeeController::class,'reject']);
+        Route::get('/project-dues',[ProjectDueController::class,'manage']);
+        Route::post('/project-dues',[ProjectDueController::class,'store']);
+        Route::patch('/project-dues/{project}',[ProjectDueController::class,'update']);
+        Route::post('/project-due-payments/{payment}/verify',[ProjectDueController::class,'verify']);
+        Route::post('/project-due-payments/{payment}/reject',[ProjectDueController::class,'reject']);
         Route::get('/news',[NewsController::class,'adminIndex']);
         Route::post('/news',[NewsController::class,'store']);
         Route::post('/news/{article}',[NewsController::class,'update']);
