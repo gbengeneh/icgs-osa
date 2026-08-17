@@ -81,6 +81,9 @@ export function PortalShell({
   const router = useRouter();
   const { user, loading, logout } = useAuth();
   const [open, setOpen] = useState(false);
+  const [openAdminGroup, setOpenAdminGroup] = useState<string | null>(() =>
+    adminGroups.find(group => group.links.some(([href]) => pathname === href))?.label ?? "Overview"
+  );
   const setYear = user?.graduating_year ?? "Unassigned";
   const setAdminLinks = [
     ["/set-admin", "Set overview", LayoutDashboard],
@@ -116,6 +119,11 @@ export function PortalShell({
       router.replace(roleHome);
     }
   }, [authorized, loading, router, user]);
+  useEffect(() => {
+    if (!admin) return;
+    const activeGroup = adminGroups.find(group => group.links.some(([href]) => pathname === href));
+    if (activeGroup) setOpenAdminGroup(activeGroup.label);
+  }, [admin, pathname]);
   if (loading || !authorized)
     return (
       <div className="portal-loading">
@@ -154,9 +162,13 @@ export function PortalShell({
           </button>
         </div>
         <nav className="portal-nav" aria-label="Portal navigation">
-          {navigationGroups.map(group => <div className="portal-nav-group" key={group.label}>
-            <span className="portal-nav-label">{group.label}</span>
-            {group.links.map(([href, label, Icon]) => <Link key={href} href={href} className={pathname === href ? "active" : ""} onClick={() => setOpen(false)}><Icon size={19}/>{label}</Link>)}
+          {navigationGroups.map(group => <div className={`portal-nav-group ${admin && openAdminGroup === group.label ? "is-expanded" : ""}`} key={group.label}>
+            {admin ? <button className="portal-nav-group-toggle" type="button" aria-expanded={openAdminGroup === group.label} onClick={() => setOpenAdminGroup(current => current === group.label ? null : group.label)}>
+              <span>{group.label}</span><ChevronDown size={15}/>
+            </button> : <span className="portal-nav-label">{group.label}</span>}
+            <div className="portal-nav-group-links">
+              {group.links.map(([href, label, Icon]) => <Link key={href} href={href} className={pathname === href ? "active" : ""} onClick={() => setOpen(false)}><Icon size={19}/>{label}</Link>)}
+            </div>
           </div>)}
         </nav>
         <button className="portal-user" onClick={logout}>
