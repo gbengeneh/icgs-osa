@@ -36,24 +36,36 @@ const memberLinks = [
   ["/events", "Events", CalendarDays],
   ["/news", "News & updates", Newspaper],
 ] as const;
-const adminLinks = [
-  ["/admin", "Overview", LayoutDashboard],
-  ["/admin/profile", "Admin profile", CircleUserRound],
-  ["/admin/my-set", "My set information", GraduationCap],
-  ["/admin/members", "Members", UsersRound],
-  ["/admin/dues", "Dues & payments", CreditCard],
-  ["/dashboard/dues", "My personal dues", CircleUserRound],
-  ["/admin/platform-fees", "Set platform fees", CreditCard],
-  ["/admin/payment-reconciliation", "Reconcile payments", FileText],
-  ["/admin/sets", "Graduating sets", GraduationCap],
-  ["/admin/set-admins", "Set administrators", UserCog],
-  ["/admin/administrators", "Super administrators", ShieldCheck],
-  ["/admin/exceptional-members", "Exceptional members", Award],
-  ["/admin/excos", "Manage EXCOs", ShieldCheck],
-  ["/admin/gallery", "Event gallery", FileImage],
-  ["/admin/content", "Manage events", CalendarDays],
-  ["/admin/news", "Publish news", Newspaper],
-  ["/admin/settings", "Settings", Settings],
+const adminGroups = [
+  { label: "Overview", links: [
+    ["/admin", "Dashboard", LayoutDashboard],
+    ["/admin/profile", "Admin profile", CircleUserRound],
+    ["/admin/my-set", "My set information", GraduationCap],
+  ]},
+  { label: "People & access", links: [
+    ["/admin/members", "Members", UsersRound],
+    ["/admin/sets", "Graduating sets", GraduationCap],
+    ["/admin/set-admins", "Set administrators", UserCog],
+    ["/admin/administrators", "Super administrators", ShieldCheck],
+  ]},
+  { label: "Finance", links: [
+    ["/admin/dues", "Association dues", CreditCard],
+    ["/admin/personal-dues", "My personal dues", CircleUserRound],
+    ["/admin/platform-fees", "Set platform fees", CreditCard],
+    ["/admin/payment-reconciliation", "Reconcile payments", FileText],
+  ]},
+  { label: "Leadership", links: [
+    ["/admin/excos", "Association EXCOs", ShieldCheck],
+    ["/admin/exceptional-members", "Exceptional members", Award],
+  ]},
+  { label: "Publishing", links: [
+    ["/admin/content", "Events", CalendarDays],
+    ["/admin/gallery", "Event gallery", FileImage],
+    ["/admin/news", "News & articles", Newspaper],
+  ]},
+  { label: "System", links: [
+    ["/admin/settings", "Settings", Settings],
+  ]},
 ] as const;
 
 export function PortalShell({
@@ -72,9 +84,10 @@ export function PortalShell({
   const setYear = user?.graduating_year ?? "Unassigned";
   const setAdminLinks = [
     ["/set-admin", "Set overview", LayoutDashboard],
+    ["/set-admin/profile", "My profile", CircleUserRound],
     ["/set-admin/members", `${setYear} Set members`, UsersRound],
     ["/set-admin/dues", "Set dues", CreditCard],
-    ["/dashboard/dues", "My personal dues", CircleUserRound],
+    ["/set-admin/personal-dues", "My personal dues", CircleUserRound],
     ["/set-admin/platform-fees", "Platform fee", CreditCard],
     ["/set-admin/payment-reconciliation", "Reconcile payments", FileText],
     ["/set-admin/excos", "Set EXCOs", ShieldCheck],
@@ -83,7 +96,7 @@ export function PortalShell({
     ["/set-admin/community", "Community groups", MessageCircle],
     ["/events", "Events", CalendarDays],
   ] as const;
-  const links = admin ? adminLinks : setAdmin ? setAdminLinks : memberLinks;
+  const navigationGroups = admin ? adminGroups : [{ label: "Workspace", links: setAdmin ? setAdminLinks : memberLinks }] as const;
   const authorized =
     !!user &&
     (admin
@@ -92,7 +105,16 @@ export function PortalShell({
         ? user.role === "coordinator"
         : ["member", "coordinator", "super_admin"].includes(user.role));
   useEffect(() => {
-    if (!loading && !authorized) router.replace(user ? "/dashboard" : "/login");
+    if (!loading && !authorized) {
+      const roleHome = user?.role === "super_admin"
+        ? "/admin"
+        : user?.role === "coordinator"
+          ? "/set-admin"
+          : user
+            ? "/dashboard"
+            : "/login";
+      router.replace(roleHome);
+    }
   }, [authorized, loading, router, user]);
   if (loading || !authorized)
     return (
@@ -132,18 +154,10 @@ export function PortalShell({
           </button>
         </div>
         <nav className="portal-nav" aria-label="Portal navigation">
-          <span className="portal-nav-label">Workspace</span>
-          {links.map(([href, label, Icon]) => (
-            <Link
-              key={href}
-              href={href}
-              className={pathname === href ? "active" : ""}
-              onClick={() => setOpen(false)}
-            >
-              <Icon size={19} />
-              {label}
-            </Link>
-          ))}
+          {navigationGroups.map(group => <div className="portal-nav-group" key={group.label}>
+            <span className="portal-nav-label">{group.label}</span>
+            {group.links.map(([href, label, Icon]) => <Link key={href} href={href} className={pathname === href ? "active" : ""} onClick={() => setOpen(false)}><Icon size={19}/>{label}</Link>)}
+          </div>)}
         </nav>
         <button className="portal-user" onClick={logout}>
           <span className={`portal-avatar ${user.photo_url ? "has-photo" : ""}`}>{user.photo_url ? <img src={mediaUrl(user.photo_url)} alt={userName} /> : initials}</span>
